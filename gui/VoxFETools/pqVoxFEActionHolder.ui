@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>pqVoxFEActionHolder</class>
+ <widget class="QWidget" name="pqVoxFEActionHolder">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <action name="actionDataLoadManager">
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/AppIcon.png</normaloff>:/VoxFETools/Icons/AppIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load VoxFE data</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a dialog box to import voxel data</string>
+   </property>
+  </action>
+  <action name="actionAddBoundaryCondition">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/AxialConstraint.png</normaloff>:/VoxFETools/Icons/AxialConstraint.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add boundary condition</string>
+   </property>
+   <property name="iconText">
+    <string>Add boundary condition</string>
+   </property>
+   <property name="toolTip">
+    <string>Add displacement or force boundary condtion</string>
+   </property>
+  </action>
+  <action name="actionHighlightBoundaryConditions">
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/lattice.png</normaloff>:/VoxFETools/Icons/lattice.png</iconset>
+   </property>
+   <property name="text">
+    <string>Highlight boundary conditions</string>
+   </property>
+   <property name="toolTip">
+    <string>Highlight the different boundary conditions applied so far</string>
+   </property>
+  </action>
+  <action name="actionOutputSolverScript">
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/Scroll.png</normaloff>:/VoxFETools/Icons/Scroll.png</iconset>
+   </property>
+   <property name="text">
+    <string>Output solver script</string>
+   </property>
+   <property name="toolTip">
+    <string>Write out script for target solution</string>
+   </property>
+  </action>
+  <action name="actionLoadStrainData">
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/rainbow.png</normaloff>:/VoxFETools/Icons/rainbow.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load strain data</string>
+   </property>
+   <property name="toolTip">
+    <string>Import strain data and colour-map to model</string>
+   </property>
+  </action>
+  <action name="actionExtractBlock">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="VoxFETools.qrc">
+     <normaloff>:/VoxFETools/Icons/jigsaw.png</normaloff>:/VoxFETools/Icons/jigsaw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Extract block</string>
+   </property>
+   <property name="iconText">
+    <string>Extract block</string>
+   </property>
+   <property name="toolTip">
+    <string>Separate VoxFE groups</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="VoxFETools.qrc"/>
+ </resources>
+ <connections/>
+</ui>

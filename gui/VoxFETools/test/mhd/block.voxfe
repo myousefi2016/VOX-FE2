@@ -1,0 +1,9 @@
+# Load a 3D image file -- this supports ITK mhd (and maybe gipl)
+# Since all the image details are in the mhd file, all we have to do 
+# is load that first....
+LOAD_IMAGE ./block.mhd
+GROUPS  3
+1 99 Bone 1 
+100 150 Teeth 0
+250 255 Metal 0
+

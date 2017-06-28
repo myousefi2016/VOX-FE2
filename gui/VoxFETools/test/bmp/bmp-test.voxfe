@@ -1,0 +1,23 @@
+# Load a 3D image from a png/bmp stack. The format here is:
+# LOAD_IMAGE C-printf-specifier
+# The specifier, in brief, is of the form: name%NNNN.bmp
+# where NNNN indicates each file number. In this case:
+#   % -- indicates the beginning of the numeric identifier
+#   d -- indicates a decimal integer (and will probably always have to be so here)
+#   1 -- as here shows that there that the numeric identifier is only one character wide
+#        at its smallest, ie. it is not padded by spaces or zeros
+#   0 -- if a zero is given, eg. %03d, then we know that the numeric identifier is 3
+#        characters wide *and* padded by zeros such as , 001, 002,... 012,  etc
+#
+# A good source to read up on the printf spec is: http://www.cplusplus.com/reference/cstdio/printf/
+# And see the note at:-
+#    http://itk.org/ITKExamples/src/IO/ImageBase/CreateAListOfFileNames/Documentation.html
+# to see how this is really being employed here.
+#
+# If bmp files are being used, then the VOXEL_SIZE line is also needed. 
+# Since voxels are assumed to be cubic in VoxFE, we only need the dimension of one side.
+#
+LOAD_IMAGE ./sq-%1d.bmp 
+VOXEL_SIZE 0.1
+GROUPS  0
+

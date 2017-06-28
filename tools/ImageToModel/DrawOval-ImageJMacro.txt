@@ -1,0 +1,35 @@
+
+  newImage("Untitled", "8-bit", 128, 128, 1);
+  //newImage("Untitled", "8-bit", 8, 8, 1);
+  width = getWidth();
+  height = getHeight();
+
+  //setBackgroundColor(0,0,0); 
+  setForegroundColor(0,0,0);
+
+  //solid cyl
+  diam = 79;  //31, 15, 7  seems to work 49 gives 50 etc!
+  topleft = (width - diam)/2;
+  drawOval(topleft, topleft, diam, diam);
+  fillOval(topleft, topleft, diam, diam);
+  
+  ////draw a pixel at top-left
+  //diam = 2; //10;
+  //topleft = (width - diam)/2;
+  //drawRect(topleft, topleft, diam, diam);
+  //fillRect(topleft, topleft, diam, diam);
+
+  ////cyl
+  //diam = 60;
+  //topleft = (width - diam)/2;
+  //setLineWidth(4);
+  //drawOval(topleft, topleft, diam, diam);
+
+  ///////////////////////////////////////////
+  //newImage("Untitled", "8-bit", 128, 128, 1);
+  //width = getWidth();
+  //height = getHeight();
+
+  //setForegroundColor(0,0,0);
+  //drawOval(48, 48, 32, 32);
+  //fillOval(48, 48, 32, 32);

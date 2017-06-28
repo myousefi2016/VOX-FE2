@@ -1,0 +1,42 @@
+#! /bin/bash
+
+#expect 5 args eg.
+#	1. start num
+#	2. finish num
+#	3. padding level so 1 to 001 has pad of 3
+#	4. file to copy (without ".extension")
+# 5. file ".extension" eg. 'bmp' or 'png' (a dot is added)  
+
+
+#Usage: renum startNum endNum padding fileWithoutExtn extn
+
+#assume 2 args the first a number and the second the number of digits
+function pad {
+
+  fs='%0';
+  fs+=$2;
+  fs+='d'
+  printf $fs  $1  
+}
+
+for i in `seq $1 $2`; do {
+
+  file=`pad $i $3`;
+	file+=.$5
+	echo "copying" ${file};
+	cp $4.$5 $file
+} done;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

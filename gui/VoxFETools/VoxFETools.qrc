@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="/VoxFETools">
+    <file>Icons/lattice.png</file>
+    <file>Icons/rainbow.png</file>
+    <file>Icons/jigsaw.png</file>
+    <file>Icons/AppIcon.png</file>
+    <file>Icons/AxialConstraint.png</file>
+    <file>Icons/Scroll.png</file>
+  </qresource>
+</RCC>

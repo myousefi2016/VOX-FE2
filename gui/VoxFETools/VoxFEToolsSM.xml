@@ -1,0 +1,624 @@
+<!-- 
+  VoFETools ServerManagerConfiguration. 
+  Dept of Engineering
+  University of Hull, Hull, UK.
+  
+  Suggested configuration:
+  ccmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug -i ${HOME}/src/async/vox-fe/tools/VoxFETools
+ -->
+
+<ServerManagerConfiguration>
+  <ProxyGroup name="sources">
+  
+    <!-- ========================= source : itkReader ================================ -->
+    <SourceProxy name="VoxFEReader" class="voxfeITKReader" label="VoxFEReader">
+      <Documentation
+         long_help="Read a .voxfe image group file."
+         short_help="Read a .voxfe file.">
+      </Documentation>
+
+      <StringVectorProperty
+            name="FileName"
+            animateable="0"
+            command="SetFileName"
+            number_of_elements="1">
+        <FileListDomain name="files"/>
+        <Documentation>
+          This property specifies the file name for the VoxFE reader.
+        </Documentation>
+      </StringVectorProperty>
+      
+      <!-- We want the user to set this via the input dialog -->
+      <StringVectorProperty
+            name="DisplacementDataFile"
+            animateable="0"
+            command="SetDisplacementDataFile"
+            default_values=""
+            panel_visibility="never"
+            number_of_elements="1">
+        <!-- FileListDomain name="files"/ -->
+        <Documentation>
+          This property specifies the file name for the VoxFE reader.
+        </Documentation>
+      </StringVectorProperty>
+      
+      <!-- Now set in Group file -->
+      <!-- IntVectorProperty name="BorderOffset"
+                         command="SetBorderOffset"
+                         number_of_elements="3"
+                         default_values="0 0 0">
+       <Documentation>
+         Define a notional border of this width of elements around the imported 
+         object, which may be needed for remodelling growth.
+       </Documentation>
+      </IntVectorProperty -->            
+      
+
+      <IntVectorProperty name="GenerateSurfaceMesh"
+                         command="SetGenerateSurfaceMesh"
+                         number_of_elements="1"
+                         default_values="1">
+        <BooleanDomain name="bool"/>
+       <Documentation>
+         Remove internal geometry from each defined grouped material.
+       </Documentation>
+      </IntVectorProperty>
+      
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Input parameters">
+    	<Property name="GenerateSurfaceMesh" />
+      </PropertyGroup>            
+
+      <IntVectorProperty
+        name="SolverAlgorithm"
+        panel_visibility="advanced"
+        command="SetSolverAlgorithm"
+        number_of_elements="1"
+        default_values="0">
+        <EnumerationDomain name="enum">
+          <Entry value="0" text="KSPCG PCJACOBI"/>
+          <Entry value="1" text="JAPCG"/>
+        </EnumerationDomain>
+        <Documentation>
+          Set the solver conjugate gradient algorithm.
+        </Documentation>
+      </IntVectorProperty>
+
+       <IntVectorProperty name="CreateMetisFile"
+                          panel_visibility="advanced"
+                         command="SetCreateMetisFile"
+                         number_of_elements="1"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+       <Documentation>
+         Output a file ('.metis') of node connectivity for conversion to element graph.
+       </Documentation>
+      </IntVectorProperty>
+
+      <IntVectorProperty name="CreateFeltFile"
+                         panel_visibility="advanced"
+                         command="SetCreateFeltFile"
+                         number_of_elements="1"
+                         default_values="0">
+        <BooleanDomain name="bool"/>
+       <Documentation>
+         Output a Felt file ('.flt') for solution by the Felt library or WinF
+       </Documentation>
+      </IntVectorProperty>
+
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Additional Output parameters">
+    	<Property name="SolverAlgorithm" />
+	    <Property name="CreateMetisFile" />
+	    <Property name="CreateFeltFile" />	    
+      </PropertyGroup>      
+
+      
+      <IntVectorProperty name="ImageFlip"
+                         command="SetImageFlip"
+                         number_of_elements="1"
+                         default_values="1">
+        <BooleanDomain name="bool"/>
+       <Documentation>
+         Flip the image, usually moving the origin to the lower left of the objects in the image.
+       </Documentation>
+      </IntVectorProperty>
+  
+      <IntVectorProperty 
+        name="FileRange"
+        command="SetFileRange"
+        number_of_elements="3"
+        default_values="1 100 1">
+        <Documentation>
+          Set the number of the first, last and increment for image files to be read in as part of the current image. 
+          [Not used for mhd files.]
+        </Documentation>
+      </IntVectorProperty>
+
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Image data files">
+	    <Property name="ImageFlip" />
+	    <Property name="FileRange" />
+      </PropertyGroup>      
+      
+      <DoubleVectorProperty 
+        name="Bone"
+	panel_visibility="advanced"
+        command="SetDefaultBoneMaterial"
+        number_of_elements="2"
+        animateable="1"
+        default_values="17e3 0.3" >
+        <DoubleRangeDomain name="range" min="0"/>
+        <Documentation>
+          Specify the default values for Young's Modulus (N per sq mm) and Poisson's ratio of bone (assuming dimensions in mm).
+        </Documentation>
+      </DoubleVectorProperty>
+
+      <DoubleVectorProperty 
+        name="Teeth"
+	panel_visibility="advanced"
+        command="SetDefaultToothMaterial"
+        number_of_elements="2"
+        animateable="1"
+        default_values="50e3 0.3" >
+        <DoubleRangeDomain name="range" min="0"/>
+        <Documentation>
+          Specify the default values for Young's Modulus (N per sq mm) and Poisson's ratio of tooth enamel (assuming dimensions in mm).
+        </Documentation>
+      </DoubleVectorProperty>
+      
+      <DoubleVectorProperty 
+        name="Marrow"
+	panel_visibility="advanced"
+        command="SetDefaultMarrowMaterial"
+        number_of_elements="2"
+        animateable="1"
+        default_values="1e-9 0.3" >
+        <DoubleRangeDomain name="range" min="0"/>
+        <Documentation>
+          Specify the default values for Young's Modulus (N per sq mm) and Poisson's ratio of marrow (assuming dimensions in mm).
+        </Documentation>
+      </DoubleVectorProperty>
+      
+     <DoubleVectorProperty 
+        name="Chitin"
+	panel_visibility="advanced"
+        command="SetDefaultChitinMaterial"
+        number_of_elements="2"
+        animateable="1"
+        default_values="1e3 0.3" >
+        <DoubleRangeDomain name="range" min="0"/>
+        <Documentation>
+	  Specify the default values for Young's Modulus (N per sq mm) and Poisson's ratio of metal pins/filling etc (assuming dimensions in mm).
+        </Documentation>
+      </DoubleVectorProperty>            
+      
+      
+      <DoubleVectorProperty 
+        name="Metal"
+	panel_visibility="advanced"
+        command="SetDefaultMetalMaterial"
+        number_of_elements="2"
+        animateable="1"
+        default_values="2e5 0.3" >
+        <DoubleRangeDomain name="range" min="0"/>
+        <Documentation>
+	  Specify the default values for Young's Modulus (N per sq mm) and Poisson's ratio of metal pins/filling etc (assuming dimensions in mm).
+        </Documentation>
+      </DoubleVectorProperty>      
+      
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Default materials (Youngs Modulus/Poissons ratio)">
+        <Property name="Bone" />
+	<Property name="Teeth" />
+	<Property name="Marrow" />
+	<Property name="Chitin" />
+	<Property name="Metal" />
+      </PropertyGroup>      
+      
+ 
+      <Hints>
+        <ReaderFactory extensions="voxfe"
+                       file_description="Voxfe File Format" />
+     </Hints>
+    </SourceProxy>
+    
+  <!-- End Reader(s) -->
+  </ProxyGroup>
+
+  <!-- ========================= Filters ================================ -->
+  <ProxyGroup name="filters">
+  
+    <!-- ========================= filter : addConstraint ================================ -->
+    <SourceProxy name="AddBoundaryCondition" class="voxfeAddConstraintFilter" label="VoxFEBoundaryCondition">
+     <Documentation
+        long_help="The Add Constraint filter adds a boundary condition to the selected nodes."
+        short_help="Add a constraint.">
+     </Documentation>
+     
+     <InputProperty
+       name="Input"
+       port_index="0"
+       command="SetInputConnection">
+       <ProxyGroupDomain name="groups">
+         <Group name="sources"/>
+         <Group name="filters"/>
+       </ProxyGroupDomain>
+         <DataTypeDomain name="input_type">
+           <DataType value="vtkDataSet"/>
+         </DataTypeDomain>
+      </InputProperty>
+      
+      <IntVectorProperty
+         name="BoundaryCondition"
+         command="SetBoundaryCondition"
+         number_of_elements="1"
+         default_values="0">
+         <!-- clean_command="ResetDefaultConstraint"  //note this would help if would also update display  -->
+       <EnumerationDomain name="enum">
+         <Entry value="0" text="None"/>
+         <Entry value="1" text="Nodal constraint"/>
+         <Entry value="2" text="Force (parallel)"/>
+         <Entry value="3" text="Force (to point)"/>
+	 <Entry value="4" text="No remodelling"/>
+       </EnumerationDomain>
+       <Documentation>
+         This property indicates which constraint mode will be set for the selected nodes.
+       </Documentation>
+      </IntVectorProperty>
+      
+     <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Add Constraint">
+        <Property name="BoundaryCondition" />
+      </PropertyGroup>            
+      
+      <IntVectorProperty 
+        name="X"
+        command="SetAxisConstraintX"
+        number_of_elements="1"
+        default_values="0">
+        <BooleanDomain name="bool"/>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">
+            <Property type="axis" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </IntVectorProperty>
+      <IntVectorProperty 
+        name="Y"
+        command="SetAxisConstraintY"
+        number_of_elements="1"
+        default_values="0">
+        <BooleanDomain name="bool"/>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">
+            <Property type="axis" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </IntVectorProperty>
+      <IntVectorProperty 
+        name="Z"
+        command="SetAxisConstraintZ"
+        number_of_elements="1"
+        default_values="0">
+        <BooleanDomain name="bool"/>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">
+            <Property type="axis" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </IntVectorProperty>
+
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Check to constrain axis">
+        <Property name="X" />
+        <Property name="Y" />
+        <Property name="Z" />
+      </PropertyGroup>
+
+
+      <DoubleVectorProperty 
+        name="ForceVector"
+        command="SetForceVector"
+        number_of_elements="3"
+        animateable="1"
+        default_values="0 0 0" >
+        <!-- DoubleRangeDomain name="range" min="0"/ -->
+        <Documentation>
+          This property specifies the force vector to apply at each point.
+        </Documentation>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">      
+            <Property type="force_vector" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </DoubleVectorProperty>
+      
+     <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Enter force vector/magnitude">
+        <Property name="ForceVector" />
+      </PropertyGroup>      
+
+      <DoubleVectorProperty 
+        name="ForceEndpoint"
+        command="SetForceEndpoint"
+        number_of_elements="3"
+        animateable="1"
+        default_values="0 0 0" >
+        <!-- DoubleRangeDomain name="range" min="0"/ -->
+        <Documentation>
+          This property specifies the target endpoint for which to compute each force vector.
+        </Documentation>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">      
+            <Property type="force_endpoint" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </DoubleVectorProperty>
+
+      <DoubleVectorProperty 
+        name="Magnitude"
+        command="SetForceMagnitude"
+        number_of_elements="1"
+        animateable="1"
+        default_values="0" >
+        <Documentation>
+          Specify the total force magnitude.
+        </Documentation>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">      
+            <Property type="force_magnitude" />
+          </PropertyWidgetDecorator>
+        </Hints>
+      </DoubleVectorProperty>
+      
+      <IntVectorProperty
+        name="Distribution"
+        command="SetForceDistribution"
+        number_of_elements="1"
+        default_values="0">
+        <EnumerationDomain name="enum">
+          <Entry value="0" text="Node"/>
+          <Entry value="1" text="Area"/>
+        </EnumerationDomain>
+        <Documentation>
+          Set whether the total force should be allocated on each node or distributed over all nodes.
+        </Documentation>
+        <Hints>
+          <PropertyWidgetDecorator type="constraint_decorator">      
+            <Property type="force_magnitude" />
+          </PropertyWidgetDecorator>
+        </Hints>       
+      </IntVectorProperty>
+      
+      <DoubleVectorProperty 
+	name="GlyphScale"
+	command="SetGlyphScale"
+	number_of_elements="1"
+	default_values="0.2" >
+	<Documentation>
+	  Specify the scaling of the glyph for this boundary condition.
+	</Documentation>
+      </DoubleVectorProperty> 
+      
+      <!-- DoubleVectorProperty 
+	name="GlyphOffset"
+	command="SetGlyphOffset"
+	number_of_elements="3"
+	default_values="0.0 0.0 0.0" >
+	<Documentation>
+	  Specify the offset of the glyph for this boundary condition, to nudge into view.
+	</Documentation>
+      </DoubleVectorProperty -->
+
+      <DoubleVectorProperty 
+	name="OffsetStep"
+	panel_visibility="advanced"
+	command="SetOffsetStep"
+	number_of_elements="1"
+	default_values="0.1" >
+	<Documentation>
+	  Specify the offset step of the glyph for use with slider, to nudge the glyph into view.
+	</Documentation>
+      </DoubleVectorProperty>
+      
+      <DoubleVectorProperty name="OffsetX"
+         command="SetOffsetX"
+	 panel_visibility="advanced"
+         number_of_elements="1"
+         default_values="0.0">
+         <DoubleRangeDomain name="range" min="-10.0" max="10.0" />
+	 <Documentation>
+	  Specify the X offset of the glyph in conjunction with the step size, to nudge the glyph into view.
+	</Documentation>
+      </DoubleVectorProperty>
+
+      <DoubleVectorProperty name="OffsetY"
+         command="SetOffsetY"
+	 panel_visibility="advanced"
+         number_of_elements="1"
+         default_values="0.0">
+         <DoubleRangeDomain name="range" min="-10.0" max="10.0" />
+	 <Documentation>
+	  Specify the Y offset of the glyph in conjunction with the step size, to nudge the glyph into view.
+	</Documentation>
+      </DoubleVectorProperty>
+
+      <DoubleVectorProperty name="OffsetZ"
+         command="SetOffsetZ"
+	 panel_visibility="advanced"
+         number_of_elements="1"
+         default_values="0.0">
+         <DoubleRangeDomain name="range" min="-10.0" max="10.0" />
+	 <Documentation>
+	  Specify the Z offset of the glyph in conjunction with the step size, to nudge the glyph into view.
+	</Documentation>
+      </DoubleVectorProperty>
+      
+      <!-- Define property group for better readability of panel -->
+      <PropertyGroup label="Enter vector data">
+        <Property name="ForceVector" />
+        <Property name="ForceEndpoint" />
+        <Property name="Magnitude" />
+        <Property name="Distribution" />        
+      </PropertyGroup>      
+
+      <PropertyGroup label="Glyph annotation">
+        <Property name="GlyphScale" />
+ 	      <Property name="OffsetStep" />
+      	<Property name="OffsetX" />
+	      <Property name="OffsetY" />
+	      <Property name="OffsetZ" />
+      </PropertyGroup>      
+      
+    </SourceProxy>
+    
+    <!-- ========================= filter : addGlyphAnnotation ================================ -->
+    <SourceProxy name="AddGlyphAnnotation" class="voxfeGlyphAnnotationFilter" label="VoxFEGlyphAnnotation">
+      <Documentation
+        long_help="The GlyphAnnotation filter adds glyph symbols to nodes defined in the boundary condition."
+        short_help="Add glyphs to BC.">
+      </Documentation>
+    
+      <DoubleVectorProperty 
+	name="GlyphScale"
+	command="SetGlyphScale"
+	number_of_elements="1"
+	default_values="0.2" >
+	<Documentation>
+	  Specify the scaling of the glyph for this boundary condition.
+	</Documentation>
+      </DoubleVectorProperty>      
+    
+    </SourceProxy>    
+    
+    <!-- ========================= filter : outputScript ================================ -->
+    <SourceProxy name="OutputSolverScript" class="voxfeOutputScriptFilter" label="VoxFEOutputScript">
+      <Documentation
+         long_help="Update the VoxFE solver script with boundary condition data."
+         short_help="Output solver script.">
+      </Documentation>
+
+      <InputProperty
+         name="InputModel"
+	       port_index="0"
+         command="SetInput0Connection">
+        <ProxyGroupDomain name="groups">
+          <Group name="sources"/>
+          <Group name="filters"/>
+        </ProxyGroupDomain>
+        <DataTypeDomain name="input_type">
+          <DataType value="vtkMultiBlockDataSet"/>
+        </DataTypeDomain>
+        <Documentation>
+          Set the source voxel model.
+        </Documentation>
+      </InputProperty>
+
+      <InputProperty
+         name="BoundaryConditions"
+      	 port_index="1"
+         command="SetInput1Connection"
+         multiple_input="1">
+        <ProxyGroupDomain name="groups">
+          <Group name="sources"/>
+          <Group name="filters"/>
+        </ProxyGroupDomain>
+        <DataTypeDomain name="input_type">
+          <DataType value="vtkMultiBlockDataSet"/>          
+        </DataTypeDomain>
+        <Documentation>
+          Specify the boundary condition(s).
+        </Documentation>
+      </InputProperty>
+      
+      <!-- IntVectorProperty name="GenerateFeltScript"
+                         command="SetGenerateFeltScript"
+                         number_of_elements="1"
+                         default_values="0">
+       <BooleanDomain name="bool"/>
+       <Documentation>
+         Create a script file to solve with Felt... NB. small problems (up to ~10,000 nodes) only!.
+       </Documentation>
+      </IntVectorProperty -->
+
+    </SourceProxy>
+    <!-- End OutputScriptFilter -->
+    
+   <!-- ========================= filter : addStrains ================================== -->    
+    <SourceProxy name="AddStrainsFilter" class="voxfeStrainFilter" label="VoxFEAddStrainFilter">
+      <Documentation
+         long_help="Overlay strain data from a .strain file and colour map"
+         short_help="Overlay strain data">
+      </Documentation>
+
+      <InputProperty
+         name="InputModel"
+	       port_index="0"
+         command="SetInput0Connection">
+        <ProxyGroupDomain name="groups">
+          <Group name="sources"/>
+          <Group name="filters"/>
+        </ProxyGroupDomain>
+        <DataTypeDomain name="input_type">
+          <DataType value="vtkMultiBlockDataSet"/>
+        </DataTypeDomain>
+        <Documentation>
+          Set the source voxel model.
+        </Documentation>
+      </InputProperty>
+      
+      <!-- Including this turns our filter into a reader - and we might need to care
+           about that if on some machines, the buttons are not available, so if we 
+           are going to include it we need the hint section for file types. -->
+      <StringVectorProperty
+            name="StrainFile"
+            animateable="0"
+            command="SetStrainFile"
+            number_of_elements="1">
+        <FileListDomain name="files"/>
+        <Documentation>
+          This property specifies the file name for the strain file.
+        </Documentation>
+      </StringVectorProperty>
+ 
+      <!-- IntVectorProperty name="DisplacementsOnly"
+                         command="SetDisplacementsOnly"
+                         number_of_elements="1"
+                         default_values="1">
+       <BooleanDomain name="bool"/>
+       <Documentation>
+         If set, assume the file contains only displacement data (and header 
+	 info: num points and voxel size at the top).
+       </Documentation>
+      </IntVectorProperty -->      
+
+      <!-- //Fixme: Temporary variable for use with old solver -->
+      <IntVectorProperty name="ParabmuSolverOutput"
+                         command="SetBMUSolverOutput"
+                         number_of_elements="1"
+                         default_values="0">
+       <BooleanDomain name="bool"/>
+       <Documentation>
+         If set, assume the file contains only displacement data generated
+		 by the 'PARA_BMU' solver (this option relies upon the existence of a
+		 separate '.nodemap' file).
+       </Documentation>
+      </IntVectorProperty>      
+
+      
+      <!-- Use this if we want to make this a reader -->
+      <!-- Hints>
+        <ReaderFactory extensions="strain"
+                       file_description="Strain table format" />
+     </Hints -->
+    </SourceProxy>
+    
+    
+    
+
+  </ProxyGroup>
+  <!-- ========================= filters ================================ -->
+
+</ServerManagerConfiguration>
+

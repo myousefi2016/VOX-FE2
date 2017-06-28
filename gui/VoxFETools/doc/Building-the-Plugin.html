@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="generator" content="http://www.nongnu.org/elyxer/"/>
+<meta name="create-date" content="2015-03-31"/>
+<link rel="stylesheet" href="http://elyxer.nongnu.org/lyx.css" type="text/css" media="all"/>
+<title>ParaView/VoxFE2</title>
+</head>
+<body>
+<div id="globalWrapper">
+<h1 class="title">
+ParaView/VoxFE2
+</h1>
+<div class="Unindented">
+Thanks for your interest in ParaView/VoxFE2. This document describes how to build the VoxFE plugin on Windows 7 and Ubuntu 14.04 64 bit platforms. The focus is on building a debug version, since release versions for these platforms should be available as binaries.
+</div>
+<div class="fulltoc">
+<div class="tocheader">
+Table of Contents
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Section-1">Section 1: Building Qt and ParaView</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.1">Subsection 1.1: Requirements</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.2">Subsection 1.2: Building Qt and ParaView on Windows</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.2.1">Subsubsection 1.2.1: Qt</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-1.2.2">Subsubsection 1.2.2: ParaView</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-1.3">Subsection 1.3: Building Qt and ParaView on Ubuntu</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Section-2">Section 2: Building the VoxFE2 plugin</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.1">Subsection 2.1: ITK</a>
+</div>
+<div class="tocindent">
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-2.1.1">Subsubsection 2.1.1: Building ITK</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsubsection-2.1.2">Subsubsection 2.1.2: Issue with ITK on Windows</a>
+</div>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.2">Subsection 2.2: VoxFE</a>
+</div>
+<div class="toc">
+<a class="Link" href="#toc-Subsection-2.3">Subsection 2.3: Loading the plugin</a>
+</div>
+</div>
+</div>
+
+</div>
+<h1 class="Section">
+<a class="toc" name="toc-Section-1">1</a> Building Qt and ParaView
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.1">1.1</a> Requirements
+</h2>
+<ul>
+<li>
+Visual Studio 2010 (later versions may work but have not been tested) on Windows, or GNU g++ 4.8.x on Linux.
+</li>
+<li>
+ParaView v 4.1.0 (the current version, 4.3.1, seems to be ok but is not well-tested; whichever version you choose, v 4.3.1 has a much improved manual which is certainly worth downloading)
+</li>
+<li>
+Qt 4.8.x
+</li>
+<li>
+CMake 2.8.12 (or later)
+</li>
+<li>
+Optional (for the plugin): ITK 4.4.2
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.2">1.2</a> Building Qt and ParaView on Windows<span class="FootOuter"><span class="SupFootMarker"> [A] </span><span class="HoverFoot"><span class="SupFootMarker"> [A] </span><blockquote class="Quotation">
+Note: the helpful advice <a class="URL" href="http://www.paraview.org/pipermail/paraview/2010-April/017063.html">here</a>.
+</blockquote>
+</span></span>
+</h2>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.2.1">1.2.1</a> Qt
+</h3>
+<ul>
+<li>
+Decompress the Qt zip file and move the whole expanded directory to its install location
+</li>
+<li>
+Open the Visual Studio (VS) x64 command prompt
+</li>
+<li>
+Change the directory to the installed Qt location, eg. <i>cd C:\build\qt-everywhere-opensource-src-4.8.5</i>
+</li>
+<li>
+Run:
+</li>
+
+</ul>
+<div class="Verse">
+<i>configure -nomake demos -nomake examples -debug -shared -fast -exceptions -stl</i>
+</div>
+<ul>
+<li>
+Run: <i>nmake</i>
+</li>
+
+</ul>
+<div class="Unindented">
+Note that if you use the flag<i> -debug-and-release</i> both versions will be configured to build, but only one configuration will be available when it comes to building ParaView or the VoxFE plugin (usually the release). If you want a release version, it is better to start from scratch with a separate install directory and use: <i>-release</i>.
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-1.2.2">1.2.2</a> ParaView
+</h3>
+<ul>
+<li>
+Peruse the ParaView <a class="URL" href="http://www.paraview.org/Wiki/ParaView:Build_And_Install">Wiki page</a> to get familiar with the process.
+</li>
+<li>
+Decompress the ParaView source code bundle and create a separate (out-of-source) build directory, eg. <i>C:\build\pv-4.1.0</i>
+</li>
+<li>
+Setting the following environment variables helps with CMake configuration:<ul>
+<li>
+Create <i>QTDIR</i> to point to the built Qt directory eg. <i>C:\build\qt-everywhere-opensource-src-4.8.5</i>
+</li>
+<li>
+Add <i>%QTDIR%\bin</i> and <i>%QTDIR%\lib</i> to PATH eg. <i>Other\things\in\Path;%QTDIR%\bin;%QTDIR%\lib</i>
+</li>
+<li>
+See eg. <a class="URL" href="http://www.computerhope.com/issues/ch000549.htm">here</a> for help with setting variables.
+</li>
+
+</ul>
+
+</li>
+<li>
+Run <i>cmake-gui</i>, from the icon, or preferably, a VS x64 command prompt window (so that environment variables can be checked). Select the build tool chain: here VS 2010 (aka version 10) x64.
+</li>
+<li>
+Set the appropriate source and build directories and click <i>Configure</i>. Check that the correct Qt libraries/tools have been detected.
+</li>
+<li>
+Run: <i>Generate</i>.
+</li>
+<li>
+After some time, a ‘solution’ file should be generated in your ParaView build directory. Open this in VS and run build solution.
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-1.3">1.3</a> Building Qt and ParaView on Ubuntu
+</h2>
+<div class="Unindented">
+In general, the procedure is as above (and usually, simpler) for building on Linux. Ubuntu, however, does not install all the necessary build tools by default. We recommend that you run the following (on Ubuntu):-
+</div>
+<ul>
+<li>
+sudo apt-get update
+</li>
+<li>
+sudo apt-get install g++
+</li>
+<li>
+sudo apt-get install cmake cmake-curses-gui
+</li>
+<li>
+sudo apt-get install mpich2 libmpich2-dev 
+</li>
+
+</ul>
+<div class="Unindented">
+(MPich is optional for ParaView, but will certainly be useful if you intend to build/run a local version of the solver — see appropiate documentation.)
+</div>
+<ul>
+<li>
+Build Qt as above, using Qt’s configure script and <i>make</i>.
+</li>
+<li>
+See the <a class="URL" href="http://www.paraview.org/Wiki/ParaView:Build_And_Install">Wiki page</a> for an overview of the build process.
+</li>
+<li>
+For debug builds, exporting QTDIR as an environment variable and placing ${QTDIR}/bin first in your PATH and ${QTDIR}/lib first in your LD_LIBRARY_PATH will facilitate the CMake configuration process. 
+</li>
+<li>
+Create a build directory eg. <i>~/build/pv-4.1.0</i>. From the terminal command line (search for ‘term’ in Dash if not visible):-<ul>
+<li>
+cd into the build directory 
+</li>
+<li>
+Run: <i>ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/ParaView/src</i>
+</li>
+<li>
+From the ccmake interface, run ‘c’ to configure and ‘g’ to create the Makefiles.
+</li>
+<li>
+Use ‘q’ to exit ccmake, and run: <i>make</i>.
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+<h1 class="Section">
+<a class="toc" name="toc-Section-2">2</a> Building the VoxFE2 plugin
+</h1>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.1">2.1</a> ITK
+</h2>
+<div class="Unindented">
+The plugin uses the CMake build process advocated by KitWare<span class="FootOuter"><span class="SupFootMarker"> [B] </span><span class="HoverFoot"><span class="SupFootMarker"> [B] </span>See the How-To at the <a class="URL" href="http://www.paraview.org/Wiki/ParaView/Plugin_HowTo">Wiki page</a>.</span></span>. The InsightToolkit (ITK) library also requires CMake, but is optional to the plugin: it is used to read and process image data to form the basic FE model. Hence, without ITK, you will not be able to read image data directly. 
+</div>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-2.1.1">2.1.1</a> Building ITK
+</h3>
+<ul>
+<li>
+ITK is available <a class="URL" href="http://www.itk.org">here</a> (under Resources); a detailed manual is also available. Download and decompress the source.
+</li>
+<li>
+Create a build directory eg. <i>~/build/itk-4.4.</i>2. Use the cmake-gui (Windows) or ccmake as with ParaView:<ul>
+<li>
+cd into the build directory 
+</li>
+<li>
+Use <i>cmake-gui</i> (Windows) or run: <i>ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/InsightToolkit-4.4.2/src</i>
+</li>
+<li>
+Make sure BUILD_SHARED_LIBS is on — this is vital for correct functioning of the plugin as an external library.
+</li>
+<li>
+Turn off BUILD_EXAMPLES and BUILD_TESTING if you don’t need them to speed up the build.
+</li>
+<li>
+From the ccmake interface, run ‘c’ to configure and ‘g’ to create the Makefiles (or <i>Configure</i> and <i>Generate</i> in Windows).
+</li>
+<li>
+Use ‘q’ to exit ccmake, and run: <i>make</i>.
+</li>
+
+</ul>
+
+</li>
+
+</ul>
+<h3 class="Subsubsection">
+<a class="toc" name="toc-Subsubsection-2.1.2">2.1.2</a> Issue with ITK on Windows
+</h3>
+<div class="Unindented">
+Note: with VS 2010, it was observed that the ITK cmake solution incorrectly added the flag <i>/machine:x86</i> to the following CMAKE variables:-
+</div>
+<ul>
+<li>
+CMAKE_EXE_LINKER_FLAGS
+</li>
+<li>
+CMAKE_MODULE_LINKER_FLAGS
+</li>
+<li>
+CMAKE_SHARED_LINKER_FLAGS
+</li>
+
+</ul>
+<div class="Unindented">
+However, the easiest way to remove this flag (which tries to build a 32 bit library) is to amend the VS solution directly by changing the <i>Linker </i>options (obtained by right-clicking the solution properties) and simply deleting all instances of <i>/machine:x86</i>.
+</div>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.2">2.2</a> VoxFE
+</h2>
+<ul>
+<li>
+Download the plugin source code from Sourceforge.
+</li>
+<li>
+Create a build directory eg. <i>~/build/VoxFE-plugin</i>.
+</li>
+<li>
+Use <i>cmake-gui</i> (Windows) or run: <i>ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/Plugin-src</i>
+</li>
+<li>
+Turn VOXFE_USE_ITK on or off, depending on whether you have built ITK.
+</li>
+<li>
+Set ParaView_DIR to the build directory for Paraview, and ITK_DIR to that for ITK (if selected).
+</li>
+<li>
+From the ccmake interface, run ‘c’ to configure and ‘g’ to create the Makefiles (or <i>Configure</i> and <i>Generate</i> in Windows).
+</li>
+<li>
+Use ‘q’ to exit ccmake, and run: <i>make</i>.
+</li>
+
+</ul>
+<h2 class="Subsection">
+<a class="toc" name="toc-Subsection-2.3">2.3</a> Loading the plugin
+</h2>
+<ul>
+<li>
+Run ParaView. 
+</li>
+<li>
+From the <i>Tools</i> menu, select <i>Manage Plugins</i> and from the dialog box which opens, select <i>Load New</i>. Navigate to the Plugin library (‘libVoxFETools.dll’ on Windows, or ‘libVoxFETools.so’ under Linux) and click OK. Use the <i>Auto Load</i> feature to load automatically in future.
+</li>
+<li>
+Note that, if you wish to use ITK, the ITK library/libraries will also have to be within the same directory or available within your system path. 
+</li>
+
+</ul>
+
+<hr class="footer"/>
+<div class="footer" id="generated-by">
+Document generated by <a href="http://elyxer.nongnu.org/">eLyXer 1.2.5 (2013-03-10)</a> on <span class="create-date">2015-03-31T04:05:29.541587</span>
+</div>
+</div>
+</body>
+</html>

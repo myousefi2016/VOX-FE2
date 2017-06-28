@@ -1,0 +1,14 @@
+LOAD_MATERIALS_FILE ./materials.txt
+VOXEL_SIZE 0.1 0.1 0.1  1
+
+ALGORITHM_FEA JAPCG
+MAX_ITER 500
+TOLERANCE 1e-09
+LOAD_MCTSCAN 148 148 48  ./o-test.voxfe.model
+
+SELECTION_OF_NODES
+    SELECT_NODE_FILE ./constraints.txt
+COMPUTE_SED
+
+PRINT_X ./displacement.txt
+

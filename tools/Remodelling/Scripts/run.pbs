@@ -1,0 +1,95 @@
+#!/bin/bash --login
+
+# Remodelling job submission script for ARCHER
+
+#PBS -N vox-fe
+#PBS -l select=5
+#PBS -l walltime=60:00:00
+#PBS -A ecse0115
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+base_dir=`pwd`
+
+# A quick conversion script, while the new solver beds in
+CreatePetScScript() {
+
+  # clear out any old file 
+  sed -n 's/VOXEL_SIZE/SET_VOXEL_SIZE/p'                $1  > $1.petsc    ;
+  sed -n 's/LOAD_MATERIALS_FILE/LOAD_MATERIALS/p'       $1 >> $1.petsc    ;
+  echo ""                                                  >> $1.petsc    ;
+  sed -n 's/ALGORITHM_FEA\ JAPCG/SET_ALGORITHM_FEA\ KSPCG\ PCJACOBI/p' $1 >> $1.petsc    ;
+  sed -n 's/MAX_ITER/SET_MAX_ITER/p'                    $1 >> $1.petsc    ;
+  sed -n 's/TOLERANCE/SET_TOLERANCE/p'                  $1 >> $1.petsc    ;
+  echo ""                                                  >> $1.petsc    ;
+  sed -n 's/LOAD_MCTSCAN/LOAD_MODEL/p'                  $1 >> $1.petsc    ;
+  sed -n 's/[ \t]*SELECT_NODE_FILE/LOAD_CONSTRAINTS/p'  $1 >> $1.petsc    ;
+  echo ""                                                  >> $1.petsc    ; 
+  sed -n 's/PRINT_X/PRINT_DISPLACEMENTS/p'              $1 >> $1.petsc    ;
+}
+
+
+# We have requested 5 nodes, one will run the remodelling process, the other four are for running the solver
+SOLVERPROCS=4
+SOLVER="/work/ecse0115/ecse0115/shared/voxfe_2.0/bin/petscSolver "
+
+# starting iteration - this directory should exist and contain *just* the model files
+StartIteration=0
+# stopping iteration - we remodel up to but not including this step
+StopIteration=20
+# Remodelling - remove voxels below this criterion
+LowerThreshold=0.001
+# Remodelling - add to voxels above this criterion
+UpperThreshold=0.01
+# Input data file name, without .script extn
+BaseScriptName=voxfe
+
+# Create the directories: the first directory in the iteration is assumed to exist already.
+# The last will contain the latest model, which is created but not processed
+j=$StartIteration
+j=$((j + 1))
+k=$StopIteration
+k=$((k + 1))
+for i in `seq $j $k`; 
+do
+  mkdir $i
+done
+
+# Start the remodelling process, asynchronously
+# This will set up the directories and then wait as necessary for the solver
+aprun -n 1 $base_dir/remodelling.sh $StartIteration $StopIteration $LowerThreshold $UpperThreshold $BaseScriptName > my_stdout.txt 2> my_stderr.txt &
+
+# Now run each iteration of the solver
+cd $base_dir
+for (( i=StartIteration; i<=StopIteration; i++ ))
+do {
+  cd $i
+
+  echo "Starting solve at: " $i >> ../timing.txt
+  date -I'ns'  >> ../timing.txt
+
+  # do check on any previous solver output
+  output=`grep solver_done "FECompleted.txt"`
+  if [ -z "$output" ] 
+  then 
+    CreatePetScScript $BaseScriptName.script
+    aprun -n $SOLVERPROCS $SOLVER $BaseScriptName.script.petsc
+  else 
+    echo "@@@ Already solved at: $i @@@"; 
+  fi
+
+  while [[ ! -e Remodelling_done ]]
+  do
+    sleep 10
+  done
+
+  cd ..  
+
+} done
+
+# wait for the remodelling process to complete
+wait
+
+echo "All done, have a nice day!"
+
+

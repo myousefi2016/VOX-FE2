@@ -1,0 +1,654 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+ParaView/VoxFE2
+\end_layout
+
+\begin_layout Standard
+Thanks for your interest in ParaView/VoxFE2.
+ This document describes how to build the VoxFE plugin on Windows 7 and
+ Ubuntu 14.04 64 bit platforms.
+ The focus is on building a debug version, since release versions for these
+ platforms should be available as binaries.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Building Qt and ParaView
+\end_layout
+
+\begin_layout Subsection
+Requirements
+\end_layout
+
+\begin_layout Itemize
+Visual Studio 2010 (later versions may work but have not been tested) on
+ Windows, or GNU g++ 4.8.x on Linux.
+\end_layout
+
+\begin_layout Itemize
+ParaView v 4.1.0 (the current version, 4.3.1, seems to be ok but is not well-tested;
+ whichever version you choose, v 4.3.1 has a much improved manual which is
+ certainly worth downloading)
+\end_layout
+
+\begin_layout Itemize
+Qt 4.8.x
+\end_layout
+
+\begin_layout Itemize
+CMake 2.8.12 (or later)
+\end_layout
+
+\begin_layout Itemize
+Optional (for the plugin): ITK 4.4.2
+\end_layout
+
+\begin_layout Subsection
+Building Qt and ParaView on Windows
+\begin_inset Foot
+status collapsed
+
+\begin_layout Quotation
+Note: the helpful advice 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "http://www.paraview.org/pipermail/paraview/2010-April/017063.html"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Qt
+\end_layout
+
+\begin_layout Itemize
+Decompress the Qt zip file and move the whole expanded directory to its
+ install location
+\end_layout
+
+\begin_layout Itemize
+Open the Visual Studio (VS) x64 command prompt
+\end_layout
+
+\begin_layout Itemize
+Change the directory to the installed Qt location, eg.
+ 
+\emph on
+cd C:
+\backslash
+build
+\backslash
+qt-everywhere-opensource-src-4.8.5
+\end_layout
+
+\begin_layout Itemize
+Run:
+\end_layout
+
+\begin_layout Verse
+
+\emph on
+configure -nomake demos -nomake examples -debug -shared -fast -exceptions
+ -stl
+\end_layout
+
+\begin_layout Itemize
+Run: 
+\emph on
+nmake
+\end_layout
+
+\begin_layout Standard
+Note that if you use the flag
+\emph on
+ -debug-and-release
+\emph default
+ both versions will be configured to build, but only one configuration will
+ be available when it comes to building ParaView or the VoxFE plugin (usually
+ the release).
+ If you want a release version, it is better to start from scratch with
+ a separate install directory and use: 
+\emph on
+-release
+\emph default
+.
+\end_layout
+
+\begin_layout Subsubsection
+ParaView
+\end_layout
+
+\begin_layout Itemize
+Peruse the ParaView 
+\begin_inset CommandInset href
+LatexCommand href
+name "Wiki page"
+target "http://www.paraview.org/Wiki/ParaView:Build_And_Install"
+
+\end_inset
+
+ to get familiar with the process.
+\end_layout
+
+\begin_layout Itemize
+Decompress the ParaView source code bundle and create a separate (out-of-source)
+ build directory, eg.
+ 
+\emph on
+C:
+\backslash
+build
+\backslash
+pv-4.1.0
+\end_layout
+
+\begin_layout Itemize
+Setting the following environment variables helps with CMake configuration:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Create 
+\emph on
+QTDIR
+\emph default
+ to point to the built Qt directory eg.
+ 
+\emph on
+C:
+\backslash
+build
+\backslash
+qt-everywhere-opensource-src-4.8.5
+\end_layout
+
+\begin_layout Itemize
+Add 
+\emph on
+%QTDIR%
+\backslash
+bin
+\emph default
+ and 
+\emph on
+%QTDIR%
+\backslash
+lib
+\emph default
+ to PATH eg.
+ 
+\emph on
+Other
+\backslash
+things
+\backslash
+in
+\backslash
+Path;%QTDIR%
+\backslash
+bin;%QTDIR%
+\backslash
+lib
+\end_layout
+
+\begin_layout Itemize
+See eg.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "http://www.computerhope.com/issues/ch000549.htm"
+
+\end_inset
+
+ for help with setting variables.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Run 
+\emph on
+cmake-gui
+\emph default
+, from the icon, or preferably, a VS x64 command prompt window (so that
+ environment variables can be checked).
+ Select the build tool chain: here VS 2010 (aka version 10) x64.
+\end_layout
+
+\begin_layout Itemize
+Set the appropriate source and build directories and click 
+\emph on
+Configure
+\emph default
+.
+ Check that the correct Qt libraries/tools have been detected.
+\end_layout
+
+\begin_layout Itemize
+Run: 
+\emph on
+Generate
+\emph default
+.
+\end_layout
+
+\begin_layout Itemize
+After some time, a `solution' file should be generated in your ParaView
+ build directory.
+ Open this in VS and run build solution.
+\end_layout
+
+\begin_layout Subsection
+Building Qt and ParaView on Ubuntu
+\end_layout
+
+\begin_layout Standard
+In general, the procedure is as above (and usually, simpler) for building
+ on Linux.
+ Ubuntu, however, does not install all the necessary build tools by default.
+ We recommend that you run the following (on Ubuntu):-
+\end_layout
+
+\begin_layout Itemize
+sudo apt-get update
+\end_layout
+
+\begin_layout Itemize
+sudo apt-get install g++
+\end_layout
+
+\begin_layout Itemize
+sudo apt-get install cmake cmake-curses-gui
+\end_layout
+
+\begin_layout Itemize
+sudo apt-get install mpich2 libmpich2-dev 
+\end_layout
+
+\begin_layout Standard
+(MPich is optional for ParaView, but will certainly be useful if you intend
+ to build/run a local version of the solver -- see appropiate documentation.)
+\end_layout
+
+\begin_layout Itemize
+Build Qt as above, using Qt's configure script and 
+\emph on
+make
+\emph default
+.
+\end_layout
+
+\begin_layout Itemize
+See the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Wiki page"
+target "http://www.paraview.org/Wiki/ParaView:Build_And_Install"
+
+\end_inset
+
+ for an overview of the build process.
+\end_layout
+
+\begin_layout Itemize
+For debug builds, exporting QTDIR as an environment variable and placing
+ ${QTDIR}/bin first in your PATH and ${QTDIR}/lib first in your LD_LIBRARY_PATH
+ will facilitate the CMake configuration process.
+ 
+\end_layout
+
+\begin_layout Itemize
+Create a build directory eg.
+ 
+\emph on
+~/build/pv-4.1.0
+\emph default
+.
+ From the terminal command line (search for `term' in Dash if not visible):-
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+cd into the build directory 
+\end_layout
+
+\begin_layout Itemize
+Run: 
+\emph on
+ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/ParaView/src
+\end_layout
+
+\begin_layout Itemize
+From the ccmake interface, run `c' to configure and `g' to create the Makefiles.
+\end_layout
+
+\begin_layout Itemize
+Use `q' to exit ccmake, and run: 
+\emph on
+make
+\emph default
+.
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Building the VoxFE2 plugin
+\end_layout
+
+\begin_layout Subsection
+ITK
+\end_layout
+
+\begin_layout Standard
+The plugin uses the CMake build process advocated by KitWare
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+See the How-To at the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Wiki page"
+target "http://www.paraview.org/Wiki/ParaView/Plugin_HowTo"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+.
+ The InsightToolkit (ITK) library also requires CMake, but is optional to
+ the plugin: it is used to read and process image data to form the basic
+ FE model.
+ Hence, without ITK, you will not be able to read image data directly.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Building ITK
+\end_layout
+
+\begin_layout Itemize
+ITK is available 
+\begin_inset CommandInset href
+LatexCommand href
+name "here"
+target "http://www.itk.org"
+
+\end_inset
+
+ (under Resources); a detailed manual is also available.
+ Download and decompress the source.
+\end_layout
+
+\begin_layout Itemize
+Create a build directory eg.
+ 
+\emph on
+~/build/itk-4.4.
+\emph default
+2.
+ Use the cmake-gui (Windows) or ccmake as with ParaView:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+cd into the build directory 
+\end_layout
+
+\begin_layout Itemize
+Use 
+\emph on
+cmake-gui
+\emph default
+ (Windows) or run: 
+\emph on
+ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/InsightToolkit-4.4.2/src
+\end_layout
+
+\begin_layout Itemize
+Make sure BUILD_SHARED_LIBS is on -- this is vital for correct functioning
+ of the plugin as an external library.
+\end_layout
+
+\begin_layout Itemize
+Turn off BUILD_EXAMPLES and BUILD_TESTING if you don't need them to speed
+ up the build.
+\end_layout
+
+\begin_layout Itemize
+From the ccmake interface, run `c' to configure and `g' to create the Makefiles
+ (or 
+\emph on
+Configure
+\emph default
+ and 
+\emph on
+Generate
+\emph default
+ in Windows).
+\end_layout
+
+\begin_layout Itemize
+Use `q' to exit ccmake, and run: 
+\emph on
+make
+\emph default
+.
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection
+Issue with ITK on Windows
+\end_layout
+
+\begin_layout Standard
+Note: with VS 2010, it was observed that the ITK cmake solution incorrectly
+ added the flag 
+\emph on
+/machine:x86
+\emph default
+ to the following CMAKE variables:-
+\end_layout
+
+\begin_layout Itemize
+CMAKE_EXE_LINKER_FLAGS
+\end_layout
+
+\begin_layout Itemize
+CMAKE_MODULE_LINKER_FLAGS
+\end_layout
+
+\begin_layout Itemize
+CMAKE_SHARED_LINKER_FLAGS
+\end_layout
+
+\begin_layout Standard
+However, the easiest way to remove this flag (which tries to build a 32
+ bit library) is to amend the VS solution directly by changing the 
+\emph on
+Linker 
+\emph default
+options (obtained by right-clicking the solution properties) and simply
+ deleting all instances of 
+\emph on
+/machine:x86
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+VoxFE
+\end_layout
+
+\begin_layout Itemize
+Download the plugin source code from Sourceforge.
+\end_layout
+
+\begin_layout Itemize
+Create a build directory eg.
+ 
+\emph on
+~/build/VoxFE-plugin
+\emph default
+.
+\end_layout
+
+\begin_layout Itemize
+Use 
+\emph on
+cmake-gui
+\emph default
+ (Windows) or run: 
+\emph on
+ccmake -D CMAKE_BUILD_TYPE=Debug -i /path/to/Plugin-src
+\end_layout
+
+\begin_layout Itemize
+Turn VOXFE_USE_ITK on or off, depending on whether you have built ITK.
+\end_layout
+
+\begin_layout Itemize
+Set ParaView_DIR to the build directory for Paraview, and ITK_DIR to that
+ for ITK (if selected).
+\end_layout
+
+\begin_layout Itemize
+From the ccmake interface, run `c' to configure and `g' to create the Makefiles
+ (or 
+\emph on
+Configure
+\emph default
+ and 
+\emph on
+Generate
+\emph default
+ in Windows).
+\end_layout
+
+\begin_layout Itemize
+Use `q' to exit ccmake, and run: 
+\emph on
+make
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+Loading the plugin
+\end_layout
+
+\begin_layout Itemize
+Run ParaView.
+ 
+\end_layout
+
+\begin_layout Itemize
+From the 
+\emph on
+Tools
+\emph default
+ menu, select 
+\emph on
+Manage Plugins
+\emph default
+ and from the dialog box which opens, select 
+\emph on
+Load New
+\emph default
+.
+ Navigate to the Plugin library (`libVoxFETools.dll' on Windows, or `libVoxFETool
+s.so' under Linux) and click OK.
+ Use the 
+\emph on
+Auto Load
+\emph default
+ feature to load automatically in future.
+\end_layout
+
+\begin_layout Itemize
+Note that, if you wish to use ITK, the ITK library/libraries will also have
+ to be within the same directory or available within your system path.
+ 
+\end_layout
+
+\end_body
+\end_document
