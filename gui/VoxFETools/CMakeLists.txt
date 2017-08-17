@@ -96,7 +96,6 @@ IF (PARAVIEW_BUILD_QT_GUI)
 
   IF (PARAVIEW_QT_VERSION VERSION_GREATER "4")
     SET (Qt5_FIND_COMPONENTS Widgets)
-    INCLUDE (ParaViewQt5)
     QT5_WRAP_CPP(MOC_SRCS ${MOC_HEADERS} addBoundaryCondition/pqConstraintPropertyWidgetDecorator.h)
     QT5_WRAP_UI(UI_SRCS ${UI_FILES})
   ELSE ()
