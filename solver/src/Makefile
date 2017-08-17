@@ -14,7 +14,7 @@ OBJS  = $(CXXSRCS:.cpp=.$(OBJECTEXT))
 CXXFLAGS = $(GLOBAL_CXXFLAGS) $(CXXLIBS)
 
 $(EXE): $(OBJS)
-	$(LD) $(LDFLAGS) $^ -o $@
+	$(LD) $(LDFLAGS) $^ -o $@ -lpetsc
 
 	mv $(EXE) $(BIN)
 

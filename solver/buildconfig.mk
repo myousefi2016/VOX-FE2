@@ -1,5 +1,5 @@
 SHELL           = /bin/sh
-CXX             = CC
+CXX             = mpiCC
 LD              = $(CXX)
 EXE             = voxfe_solver
 
